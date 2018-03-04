@@ -1,5 +1,6 @@
 import React from 'react';
 import {Checkbox, FlatButton, Paper, RadioButton, RadioButtonGroup, TextField} from "material-ui";
+import Entity from "./Entity";
 
 
 const Form = () => (
@@ -14,75 +15,90 @@ const Form = () => (
 
         <p>* 필수항목</p>
 
-        <div>
-            <h3>도서관 이름 *</h3>
+        <Entity
+            label={"도서관 이름"}
+            required={true}>
             <TextField hintText="내 답변"/>
-            <p>필수 질문입니다.</p>
-            <br />
-            <br />
-        </div>
+        </Entity>
 
-        <h3>도서관 소재지 (지도 표시, 물품 배송을 위해 우편번호를 포함한 세부주소) *</h3>
-        <TextField hintText="내 답변"/>
-        <br />
-        <br />
+        <Entity
+            label={"도서관 소재지 (지도 표시, 물품 배송을 위해 우편번호를 포함한 세부주소)"}
+            required={true}>
+            <TextField hintText="내 답변"/>
+        </Entity>
 
-        <h3>담당자 이름 (반드시 도서관 관계자만 신청 가능합니다.) *</h3>
-        <TextField hintText="내 답변"/>
-        <br />
-        <br />
+        <Entity
+            label={"담당자 이름 (반드시 도서관 관계자만 신청 가능합니다.)"}
+            required={true}>
+            <TextField hintText="내 답변"/>
+        </Entity>
 
-        <h3>담당자 Email (주요 공지는 이메일로 전달됩니다) *</h3>
-        <TextField hintText="내 답변"/>
-        <br />
-        <br />
+        <Entity
+            label={"담당자 Email (주요 공지는 이메일로 전달됩니다)"}
+            required={true}>
+            <TextField hintText="내 답변"/>
+        </Entity>
 
-        <h3>담당자 전화번호 (당일 연락을 위해 휴대폰 번호 권장) *</h3>
-        <TextField hintText="내 답변"/>
-        <br />
-        <br />
+        <Entity
+            label={"담당자 전화번호 (당일 연락을 위해 휴대폰 번호 권장)"}
+            required={true}>
+            <TextField hintText="내 답변"/>
+        </Entity>
 
-        <h3>강의실 수용 인원 (예상 청중 규모) *</h3>
-        <TextField hintText="내 답변"/>
-        <br />
-        <br />
+        <Entity
+            label={"강의실 수용 인원 (예상 청중 규모)"}
+            required={true}>
+            <TextField hintText="내 답변"/>
+        </Entity>
 
-        <h3>강의 관련 시설 등 (가능한것 모두 체크) *</h3>
-        <Checkbox label="빔프로젝터 / 스크린"/>
-        <Checkbox label="음향 시설"/>
-        <Checkbox label="동영상 녹화 시설"/>
-        <Checkbox label="행사안내 플랜카드"/>
-        <Checkbox label="자체 홍보"/>
-        <Checkbox label="기타:"/><TextField />
-        <br />
-        <br />
+        <Entity
+            label={"강의 관련 시설 등 (가능한것 모두 체크)"}
+            required={true}>
+            <Checkbox label="빔프로젝터 / 스크린"/>
+            <Checkbox label="음향 시설"/>
+            <Checkbox label="동영상 녹화 시설"/>
+            <Checkbox label="행사안내 플랜카드"/>
+            <Checkbox label="자체 홍보"/>
+            <Checkbox label="기타:"/><TextField />
+        </Entity>
 
-        <h3>기타 강연자/진행자가 준비해야 할 특별한 요구 사항이 있으시면 여기 적어주세요.</h3>
-        <TextField hintText="내 답변"/>
-        <br />
-        <br />
+        <Entity
+            label={"기타 강연자/진행자가 준비해야 할 특별한 요구 사항이 있으시면 여기 적어주세요."}
+            required={false}>
+            <TextField hintText="내 답변"/>
+        </Entity>
 
-        <h3>위에 입력하신 담당자 개인 정보는 이 행사 기간동안 연락을 위해 사용되고 폐기될 예정입니다. 이 행사를 위해 위 개인 정보를 행사 주최측이 이용하는 것이 동의하십니까? (필수 동의) *</h3>
-        <RadioButtonGroup name="agreeGroup">
-            <RadioButton
-                value="agree"
-                label="예"
-            />
-        </RadioButtonGroup>
-        <br />
-        <br />
+        <Entity
+            label={"위에 입력하신 담당자 개인 정보는 이 행사 기간동안 연락을 위해 사용되고 폐기될 예정입니다. 이 행사를 위해 위 개인 정보를 행사 주최측이 이용하는 것이 동의하십니까? (필수 동의)"}
+            required={true}>
+            <RadioButtonGroup name="agreeGroup">
+                <RadioButton
+                    value="agree"
+                    label="예"
+                />
+            </RadioButtonGroup>
+        </Entity>
 
-        <h3>도서관의 신청과 행사 주최측의 노력에도 불구하고, 해당 도서관에서 강연을 자원하는 강연자/진행자가 없을 경우에는 그 도서관에서의 행사가 진행되지 못할 수도 있다는 것에 동의하십니까? (필수 동의) *</h3>
-        <RadioButtonGroup name="agreeGroup">
-            <RadioButton
-                value="agree"
-                label="예"
-            />
-        </RadioButtonGroup>
-        <br />
-        <br />
+        <Entity
+            label={"도서관의 신청과 행사 주최측의 노력에도 불구하고, 해당 도서관에서 강연을 자원하는 강연자/진행자가 없을 경우에는 그 도서관에서의 행사가 진행되지 못할 수도 있다는 것에 동의하십니까? (필수 동의)"}
+            required={false}>
+            <RadioButtonGroup name="agreeGroup">
+                <RadioButton
+                    value="agree"
+                    label="예"
+                />
+            </RadioButtonGroup>
+        </Entity>
 
-        수고하셨습니다.
+        <Entity
+            label={"기타 강연자/진행자가 준비해야 할 특별한 요구 사항이 있으시면 여기 적어주세요."}
+            required={false}>
+            <TextField hintText="내 답변"/>
+        </Entity>
+
+        <p>
+            수고하셨습니다.
+        </p>
 
         <p>
             이 신청이 접수되면 강연 봉사자, 진행 봉사자들이 자신이 가고 싶은 도서관을 선정하게 되며, 주최 측에서도 모든 도서관에서 강연이 성공적으로 이루어질 수 있도록 최선의 노력을 다할 예정입니다. 그 결과는  "5월, 소프트웨어에 물들다" 홈페이지  http://SoMul.kr 를 통해 알 수 있으며, 강연이 확정되면, 또는 강연이 최종적으로 진행되지 못하게 되면 위 담당자에게 별도로 연락을 드릴 예정입니다.
