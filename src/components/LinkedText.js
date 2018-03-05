@@ -3,9 +3,11 @@ import React from 'react';
 
 const LinkedText = ({children}) => {
     return (
-        <span>
-            {children}
-        </span>
+        <div>
+            <span>
+                {children}
+            </span>
+        </div>
     );
 };
 
