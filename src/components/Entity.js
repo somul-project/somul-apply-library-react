@@ -1,4 +1,5 @@
 import React from 'react';
+import "./Form.css";
 
 
 const Entity = ({label, required, children}) => {
@@ -9,12 +10,11 @@ const Entity = ({label, required, children}) => {
         } else {
             return "";
         }
-
     }
 
     function getNotification() {
         if (required) {
-            return <p>필수 질문입니다.</p>;
+            return <p className="required">필수 질문입니다.</p>;
         } else {
             return "";
         }
@@ -24,7 +24,7 @@ const Entity = ({label, required, children}) => {
     return (
         <div>
             <h3>
-                {label} <span>{getAsterisk()}</span>
+                {label} <span className="required">{getAsterisk()}</span>
             </h3>
 
             {children}

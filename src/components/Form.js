@@ -1,7 +1,8 @@
 import React from 'react';
-import {Checkbox, FlatButton, Paper, RadioButton, RadioButtonGroup, TextField} from "material-ui";
+import {Checkbox, Paper, RadioButton, RadioButtonGroup, RaisedButton, TextField} from "material-ui";
 import Entity from "./Entity";
 import LinkedText from "./LinkedText";
+import "./Form.css";
 
 
 const Form = () => (
@@ -14,7 +15,7 @@ const Form = () => (
             신청을 위해서는 다음 질문에 모두 답을 해주시면 됩니다. 응답에 걸리는 시간은 10분 이내 입니다.
         </LinkedText>
 
-        <p>* 필수항목</p>
+        <p className="required">* 필수항목</p>
 
         <Entity
             label={"도서관 이름"}
@@ -104,9 +105,14 @@ const Form = () => (
         <LinkedText>
             이 신청이 접수되면 강연 봉사자, 진행 봉사자들이 자신이 가고 싶은 도서관을 선정하게 되며, 주최 측에서도 모든 도서관에서 강연이 성공적으로 이루어질 수 있도록 최선의 노력을 다할 예정입니다. 그 결과는  "5월, 소프트웨어에 물들다" 홈페이지  http://SoMul.kr 를 통해 알 수 있으며, 강연이 확정되면, 또는 강연이 최종적으로 진행되지 못하게 되면 위 담당자에게 별도로 연락을 드릴 예정입니다.
         </LinkedText>
+        <br/>
+        <br/>
+        <br/>
 
-        <FlatButton label="제출" />
-        <p>
+        <RaisedButton primary={true} label="제출" />
+        <br/>
+
+        <p className="comment">
             이 설문지를 통해 비밀번호를 제출하지 마세요.
         </p>
 
