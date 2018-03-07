@@ -1,0 +1,1 @@
+export const RESTAPI_HOST = "http://0.0.0.0:5000/";

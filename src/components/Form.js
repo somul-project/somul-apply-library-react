@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
+import request from 'request';
 import {Checkbox, Paper, RadioButton, RadioButtonGroup, RaisedButton, TextField} from "material-ui";
 import Entity from "./Entity";
 import LinkedText from "./LinkedText";
 import "./Form.css";
+import { RESTAPI_HOST } from "../consts/config";
 
 
 const libraryName = "libraryName";
@@ -27,11 +29,12 @@ const otherFacilities = "otherFacilities";
 class Form extends Component {
 
     state = {
-        [libraryName]: "",
-        [libraryLocation]: "",
-        [managerName]: "",
-        [managerEmail]: "",
-        [managerPhonenumber]: "",
+        [libraryName]: null,
+        [libraryLocation]: null,
+        [managerName]: null,
+        [managerEmail]: null,
+        [managerPhonenumber]: null,
+        [capacityOfAudiences]: null,
         [facilities]: {
             [facilitiesBeamOrScreen]: false,
             [facilitiesSound]: false,
@@ -39,10 +42,29 @@ class Form extends Component {
             [facilitiesPlacard]: false,
             [facilitiesSelfPromotion]: false,
         },
-        [requirementsForSpeaker]: "",
-        [personalInfoAgreement]: "",
-        [noVolunteerAgreement]: false,
-        [otherFacilities]: false,
+        [requirementsForSpeaker]: null,
+        [personalInfoAgreement]: null,
+        [noVolunteerAgreement]: null,
+        [otherFacilities]: null,
+    };
+
+    onSubmit = (event) => {
+        request
+            .post({
+                url: RESTAPI_HOST + 'api/v1/forms',
+                json: true,
+                body: this.state,
+            })
+            .on('error', (err) => {
+                console.log("err=", err);
+            })
+            .on('response', (response) => {
+                console.log("statusCode=", response.statusCode);
+                console.log("content-type=", response.headers['content-type']);
+                response.on('data', (data) => {
+                    console.log('received data=', data)
+                })
+            });
     };
 
     handleChangeWithName = (propertyName) => {
@@ -252,7 +274,11 @@ class Form extends Component {
                 </LinkedText>
                 <br/>
 
-                <RaisedButton primary={true} label="제출"/>
+                <RaisedButton
+                    primary={true}
+                    label="제출"
+                    onClick={this.onSubmit}
+                />
                 <br/>
                 <br/>
 
