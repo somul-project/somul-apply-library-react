@@ -16,16 +16,16 @@ const Entity = ({label, required, children}) => {
         if (required) {
             return <p className="required">필수 질문입니다.</p>;
         } else {
-            return "";
+            return <p />;
         }
     }
 
 
     return (
         <div>
-            <h3>
+            <h4>
                 {label} <span className="required">{getAsterisk()}</span>
-            </h3>
+            </h4>
 
             {children}
 
