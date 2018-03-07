@@ -14,9 +14,9 @@ const Entity = ({label, required, children}) => {
 
     function getNotification() {
         if (required) {
-            return <p className="required">필수 질문입니다.</p>;
+            return "필수 질문입니다.";
         } else {
-            return <p />;
+            return "";
         }
     }
 
@@ -30,7 +30,9 @@ const Entity = ({label, required, children}) => {
             {children}
 
 
-            {getNotification()}
+            <p className="required">
+                {getNotification()}
+            </p>
 
             <br/>
             <br/>
