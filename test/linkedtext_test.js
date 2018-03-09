@@ -1,5 +1,5 @@
-const expect = require("chai").expect;
-const splitTextIntoLinkedSlices = require("../src/utils/LinkedTextUtils").splitTextIntoLinkedSlices;
+import { expect } from "chai";
+import { splitTextIntoLinkedSlices } from "../src/utils/LinkedTextUtils";
 
 describe('linikedtext', () => {
     it('should splitTextIntoLinkedSlices works with a linktext that have no link', () => {

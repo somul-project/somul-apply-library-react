@@ -1,5 +1,5 @@
-const expect = require("chai").expect;
-const notEmptyString = require("../src/utils/ValidationUtils").notEmptyString;
+import { expect } from "chai";
+import { notEmptyString } from "../src/utils/ValidationUtils";
 
 
 describe('notEmptyString', () => {
