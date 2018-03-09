@@ -6,7 +6,7 @@ export function notEmptyString(data) {
         return false;
     }
 
-    if (data == "") {
+    if (data === "") {
         return false;
     }
 
