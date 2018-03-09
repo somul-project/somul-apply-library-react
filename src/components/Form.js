@@ -5,6 +5,7 @@ import Entity from "./Entity";
 import LinkedText from "./LinkedText";
 import "./Form.css";
 import { RESTAPI_HOST } from "../consts/config";
+import {isValid, notEmptyString} from "../utils/ValidationUtils";
 
 
 const libraryName = "libraryName";
@@ -27,6 +28,19 @@ const otherFacilities = "otherFacilities";
 
 
 class Form extends Component {
+    validator = {
+            [libraryName]: [notEmptyString],
+            [libraryLocation]: [notEmptyString],
+            [managerName]: [notEmptyString],
+            [managerEmail]: [notEmptyString],
+            [managerPhonenumber]: [notEmptyString],
+            [capacityOfAudiences]: [notEmptyString],
+            // [facilities]: [],
+            // [requirementsForSpeaker]: [],
+            // [personalInfoAgreement]: [],
+            [noVolunteerAgreement]: [],
+            [otherFacilities]: [],
+    };
 
     state = {
         [libraryName]: null,
@@ -120,6 +134,7 @@ class Form extends Component {
 
                 <Entity
                     label={"도서관 이름"}
+                    validated={isValid(this.state[libraryName], this.validator[libraryName])}
                     required={true}>
                     <TextField
                         hintText="내 답변"
@@ -130,6 +145,7 @@ class Form extends Component {
 
                 <Entity
                     label={"도서관 소재지 (지도 표시, 물품 배송을 위해 우편번호를 포함한 세부주소)"}
+                    validated={isValid(this.state[libraryLocation], this.validator[libraryLocation])}
                     required={true}>
                     <TextField
                         hintText="내 답변"
@@ -140,6 +156,7 @@ class Form extends Component {
 
                 <Entity
                     label={"담당자 이름 (반드시 도서관 관계자만 신청 가능합니다.)"}
+                    validated={isValid(this.state[managerName], this.validator[managerName])}
                     required={true}>
                     <TextField
                         hintText="내 답변"
@@ -150,6 +167,7 @@ class Form extends Component {
 
                 <Entity
                     label={"담당자 Email (주요 공지는 이메일로 전달됩니다)"}
+                    validated={isValid(this.state[managerEmail], this.validator[managerEmail])}
                     required={true}>
                     <TextField
                         hintText="내 답변"
@@ -160,6 +178,7 @@ class Form extends Component {
 
                 <Entity
                     label={"담당자 전화번호 (당일 연락을 위해 휴대폰 번호 권장)"}
+                    validated={isValid(this.state[managerPhonenumber], this.validator[managerPhonenumber])}
                     required={true}>
                     <TextField
                         hintText="내 답변"
@@ -170,6 +189,7 @@ class Form extends Component {
 
                 <Entity
                     label={"강의실 수용 인원 (예상 청중 규모)"}
+                    validated={isValid(this.state[capacityOfAudiences], this.validator[capacityOfAudiences])}
                     required={true}>
                     <TextField
                         hintText="내 답변"
@@ -180,6 +200,7 @@ class Form extends Component {
 
                 <Entity
                     label={"강의 관련 시설 등 (가능한것 모두 체크)"}
+                    validated={true}
                     required={true}>
                     <Checkbox
                         className="checkbox"
@@ -235,6 +256,7 @@ class Form extends Component {
 
                 <Entity
                     label={"위에 입력하신 담당자 개인 정보는 이 행사 기간동안 연락을 위해 사용되고 폐기될 예정입니다. 이 행사를 위해 위 개인 정보를 행사 주최측이 이용하는 것이 동의하십니까? (필수 동의)"}
+                    validated={isValid(this.state[personalInfoAgreement], this.validator[personalInfoAgreement])}
                     required={true}>
                     <RadioButtonGroup
                         name="agreeGroup"
@@ -249,6 +271,7 @@ class Form extends Component {
 
                 <Entity
                     label={"도서관의 신청과 행사 주최측의 노력에도 불구하고, 해당 도서관에서 강연을 자원하는 강연자/진행자가 없을 경우에는 그 도서관에서의 행사가 진행되지 못할 수도 있다는 것에 동의하십니까? (필수 동의)"}
+                    validated={isValid(this.state[noVolunteerAgreement], this.validator[noVolunteerAgreement])}
                     required={true}>
                     <RadioButtonGroup
                         name="agreeGroup"

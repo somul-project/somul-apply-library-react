@@ -2,7 +2,7 @@ import React from 'react';
 import "./Form.css";
 
 
-const Entity = ({label, required, children}) => {
+const Entity = ({label, validated, required, children}) => {
 
     function getAsterisk() {
         if (required) {
@@ -12,7 +12,7 @@ const Entity = ({label, required, children}) => {
         }
     }
 
-    function getNotification() {
+    function getNotificationMessage() {
         if (required) {
             return "필수 질문입니다.";
         } else {
@@ -20,6 +20,10 @@ const Entity = ({label, required, children}) => {
         }
     }
 
+    let notificationMessageWillBeRendered = "　";
+    if (!validated) {
+        notificationMessageWillBeRendered = getNotificationMessage();
+    }
 
     return (
         <div>
@@ -29,9 +33,8 @@ const Entity = ({label, required, children}) => {
 
             {children}
 
-
             <p className="required">
-                {getNotification()}
+                {notificationMessageWillBeRendered}
             </p>
 
             <br/>
