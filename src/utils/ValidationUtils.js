@@ -1,6 +1,6 @@
 
 export function notEmptyString(data) {
-    console.log("data=", data);
+    // console.log("data=", data);
 
     if (data === undefined || data == null) {
         return false;

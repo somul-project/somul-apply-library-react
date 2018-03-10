@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import request from 'request';
-import {Checkbox, Paper, RadioButton, RadioButtonGroup, RaisedButton, TextField} from "material-ui";
+import { Checkbox, Paper, RadioButton,
+    RadioButtonGroup, RaisedButton, TextField } from "material-ui";
 import Entity from "./Entity";
 import LinkedText from "./LinkedText";
 import "./Form.css";
 import { RESTAPI_HOST } from "../consts/config";
-import {isValid, notEmptyString} from "../utils/ValidationUtils";
+import { isValid, notEmptyString } from "../utils/ValidationUtils";
 import {EntityForm, TYPE_BOOLEAN, TYPE_ONELINETEXT} from "../data/EntityForm";
 
 
@@ -49,23 +50,9 @@ class Form extends Component {
         [noVolunteerAgreement]: new EntityForm("", TYPE_BOOLEAN, true, [notEmptyString]),
     };
 
-    componentWillMount() {
-        // this.syncFormsToState();
-    }
-
-    // syncFormsToState() {
-    //     let stateBuffer = {};
-    //     for (let key in this.forms) {
-    //         stateBuffer[key] = this.forms[key].value;
-    //         // console.log(`stateBuffer[${key}]=`, this.state[key]);
-    //     }
-    //
-    //     this.setState(stateBuffer);
-    // }
-
     everyFormsAreValid() {
-        for (let key in this.forms) {
-            let eachForm = this.forms[key];
+        for (let key in this.state) {
+            let eachForm = this.state[key];
             if (!isValid(eachForm.value, eachForm.validators)) {
                 return false;
             }
@@ -76,25 +63,30 @@ class Form extends Component {
 
     onSubmit = (event) => {
         if (this.everyFormsAreValid()) {
-
-        }
-        request
-            .post({
-                url: RESTAPI_HOST + 'api/v1/forms',
-                json: true,
-                body: this.state,
-            })
-            .on('error', (err) => {
-                console.log("err=", err);
-            })
-            .on('response', (response) => {
-                console.log("statusCode=", response.statusCode);
-                console.log("content-type=", response.headers['content-type']);
-                response.on('data', (data) => {
-                    console.log('received data=', data)
+            request
+                .post({
+                    url: RESTAPI_HOST + 'api/v1/forms',
+                    json: true,
+                    body: this.state,
                 })
-            });
+                .on('error', (err) => {
+                    console.log("err=", err);
+                })
+                .on('response', (response) => {
+                    console.log("statusCode=", response.statusCode);
+                    console.log("content-type=", response.headers['content-type']);
+                    response.on('data', (data) => {
+                        console.log('received data=', data)
+                    })
+                });
+        } else {
+            this.showValidationErrorMessage();
+        }
     };
+
+    showValidationErrorMessage() {
+        console.log("showValidationErrorMessage");
+    }
 
     handleChangeWithName = (propertyName) => {
         return (event) => {
