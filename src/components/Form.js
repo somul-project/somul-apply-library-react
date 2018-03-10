@@ -31,28 +31,35 @@ const otherFacilities = "otherFacilities";
 
 class Form extends Component {
     state = {
-        [libraryName]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
-        [libraryLocation]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
-        [managerName]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
-        [managerEmail]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
-        [managerPhonenumber]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
-        [capacityOfAudiences]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
-        [facilities]: new EntityForm({
-            [facilitiesBeamOrScreen]: false,
-            [facilitiesSound]: false,
-            [facilitiesRecord]: false,
-            [facilitiesPlacard]: false,
-            [facilitiesSelfPromotion]: false,
-        }, TYPE_ONELINETEXT, true, []),
-        [requirementsForSpeaker]: new EntityForm("", TYPE_ONELINETEXT, false),
-        [otherFacilities]: new EntityForm("", TYPE_ONELINETEXT, false),
-        [personalInfoAgreement]: new EntityForm("", TYPE_BOOLEAN, true, [notEmptyString]),
-        [noVolunteerAgreement]: new EntityForm("", TYPE_BOOLEAN, true, [notEmptyString]),
+        entities: {
+            [libraryName]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
+            [libraryLocation]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
+            [managerName]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
+            [managerEmail]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
+            [managerPhonenumber]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
+            [capacityOfAudiences]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
+            [facilities]: new EntityForm({
+                [facilitiesBeamOrScreen]: false,
+                [facilitiesSound]: false,
+                [facilitiesRecord]: false,
+                [facilitiesPlacard]: false,
+                [facilitiesSelfPromotion]: false,
+            }, TYPE_ONELINETEXT, true, []),
+            [requirementsForSpeaker]: new EntityForm("", TYPE_ONELINETEXT, false),
+            [otherFacilities]: new EntityForm("", TYPE_ONELINETEXT, false),
+            [personalInfoAgreement]: new EntityForm("", TYPE_BOOLEAN, true, [notEmptyString]),
+            [noVolunteerAgreement]: new EntityForm("", TYPE_BOOLEAN, true, [notEmptyString]),
+        },
+        validationErrorMessageVisibility: false
     };
 
+    getEntities() {
+        return this.state.entities;
+    }
+
     everyFormsAreValid() {
-        for (let key in this.state) {
-            let eachForm = this.state[key];
+        for (let key in this.getEntities()) {
+            let eachForm = this.getEntities()[key];
             if (!isValid(eachForm.value, eachForm.validators)) {
                 return false;
             }
@@ -84,23 +91,40 @@ class Form extends Component {
         }
     };
 
+    getValidationErrorMessage() {
+        if (this.state.validationErrorMessageVisibility) {
+            return "필수 항목을 재대로 입력해주세요."
+        } else {
+            return "　"
+        }
+    }
+
     showValidationErrorMessage() {
         console.log("showValidationErrorMessage");
+        this.setState({
+            validationErrorMessageVisibility: true
+        });
+
+        setTimeout(() => this.setState({
+            validationErrorMessageVisibility: false
+        }), 5000);
     }
 
     handleChangeWithName = (propertyName) => {
         return (event) => {
             this.setValue(propertyName, event.target.value);
-            console.log("propertyName=", propertyName, "this.state[propertyName].value=", this.state[propertyName].value);
+            console.log("propertyName=", propertyName, "this.state[propertyName].value=", this.getEntities()[propertyName].value);
         };
     };
 
     setValue = (propertyName, value) => {
         this.setState({
-            ...this.state,
-            [propertyName]: {
-                ...this.state[propertyName],
-                value: value,
+            entities: {
+                ...this.getEntities(),
+                [propertyName]: {
+                    ...this.getEntities()[propertyName],
+                    value: value,
+                }
             }
         });
     };
@@ -108,24 +132,26 @@ class Form extends Component {
     handleRadioChangeWithName = (propertyName) => {
         return (unused_event, unused_value) => {
             this.setValue(propertyName, true);
-            console.log("propertyName=", propertyName, "this.state[propertyName].value=", this.state[propertyName].value);
+            console.log("propertyName=", propertyName, "this.getEntities()[propertyName].value=", this.getEntities()[propertyName].value);
         };
     };
 
     handleCheckedChangeWithName(propertyName, checkedPropertyName) {
         return (event, isInputChecked) => {
             this.setValue(propertyName, {
-                [propertyName]: {
-                    ...this.state[propertyName].value,
-                    [checkedPropertyName]: isInputChecked
+                entities: {
+                    [propertyName]: {
+                        ...this.getEntities()[propertyName].value,
+                        [checkedPropertyName]: isInputChecked
+                    }
                 }
             });
-            console.log("propertyName=", propertyName, "this.state[propertyName].value=", this.state[propertyName].value);
+            console.log("propertyName=", propertyName, "this.getEntities()[propertyName].value=", this.getEntities()[propertyName].value);
         };
     }
 
     render() {
-        console.log("state=", this.state);
+        console.log("state=", this.getEntities());
         return (
             <Paper className="paper" zDepth={2}>
                 <h1>5월 소물, 도서관 참여신청서</h1>
@@ -147,66 +173,66 @@ class Form extends Component {
 
                 <Entity
                     label={"도서관 이름"}
-                    validated={isValid(this.state[libraryName].value, this.state[libraryName].validators)}
+                    validated={isValid(this.getEntities()[libraryName].value, this.getEntities()[libraryName].validators)}
                     required={true}>
                     <TextField
                         hintText="내 답변"
-                        value={this.state[libraryName].value}
+                        value={this.getEntities()[libraryName].value}
                         onChange={this.handleChangeWithName(libraryName)}
                     />
                 </Entity>
 
                 <Entity
                     label={"도서관 소재지 (지도 표시, 물품 배송을 위해 우편번호를 포함한 세부주소)"}
-                    validated={isValid(this.state[libraryLocation].value, this.state[libraryLocation].validators)}
+                    validated={isValid(this.getEntities()[libraryLocation].value, this.getEntities()[libraryLocation].validators)}
                     required={true}>
                     <TextField
                         hintText="내 답변"
-                        value={this.state[libraryLocation].value}
+                        value={this.getEntities()[libraryLocation].value}
                         onChange={this.handleChangeWithName(libraryLocation)}
                     />
                 </Entity>
 
                 <Entity
                     label={"담당자 이름 (반드시 도서관 관계자만 신청 가능합니다.)"}
-                    validated={isValid(this.state[managerName].value, this.state[managerName].validators)}
+                    validated={isValid(this.getEntities()[managerName].value, this.getEntities()[managerName].validators)}
                     required={true}>
                     <TextField
                         hintText="내 답변"
-                        value={this.state[managerName].value}
+                        value={this.getEntities()[managerName].value}
                         onChange={this.handleChangeWithName(managerName)}
                     />
                 </Entity>
 
                 <Entity
                     label={"담당자 Email (주요 공지는 이메일로 전달됩니다)"}
-                    validated={isValid(this.state[managerEmail].value, this.state[managerEmail].validators)}
+                    validated={isValid(this.getEntities()[managerEmail].value, this.getEntities()[managerEmail].validators)}
                     required={true}>
                     <TextField
                         hintText="내 답변"
-                        value={this.state[managerEmail].value}
+                        value={this.getEntities()[managerEmail].value}
                         onChange={this.handleChangeWithName(managerEmail)}
                     />
                 </Entity>
 
                 <Entity
                     label={"담당자 전화번호 (당일 연락을 위해 휴대폰 번호 권장)"}
-                    validated={isValid(this.state[managerPhonenumber].value, this.state[managerPhonenumber].validators)}
+                    validated={isValid(this.getEntities()[managerPhonenumber].value, this.getEntities()[managerPhonenumber].validators)}
                     required={true}>
                     <TextField
                         hintText="내 답변"
-                        value={this.state[managerPhonenumber].value}
+                        value={this.getEntities()[managerPhonenumber].value}
                         onChange={this.handleChangeWithName(managerPhonenumber)}
                     />
                 </Entity>
 
                 <Entity
                     label={"강의실 수용 인원 (예상 청중 규모)"}
-                    validated={isValid(this.state[capacityOfAudiences].value, this.state[capacityOfAudiences].validators)}
+                    validated={isValid(this.getEntities()[capacityOfAudiences].value, this.getEntities()[capacityOfAudiences].validators)}
                     required={true}>
                     <TextField
                         hintText="내 답변"
-                        value={this.state[capacityOfAudiences].value}
+                        value={this.getEntities()[capacityOfAudiences].value}
                         onChange={this.handleChangeWithName(capacityOfAudiences)}
                     />
                 </Entity>
@@ -218,31 +244,31 @@ class Form extends Component {
                     <Checkbox
                         className="checkbox"
                         label="빔프로젝터 / 스크린"
-                        checked={this.state[facilities].value[facilitiesBeamOrScreen]}
+                        checked={this.getEntities()[facilities].value[facilitiesBeamOrScreen]}
                         onCheck={this.handleCheckedChangeWithName(facilities, facilitiesBeamOrScreen)}
                     />
                     <Checkbox
                         className="checkbox"
                         label="음향 시설"
-                        checked={this.state[facilities].value[facilitiesSound]}
+                        checked={this.getEntities()[facilities].value[facilitiesSound]}
                         onCheck={this.handleCheckedChangeWithName(facilities, facilitiesSound)}
                     />
                     <Checkbox
                         className="checkbox"
                         label="동영상 녹화 시설"
-                        checked={this.state[facilities].value[facilitiesRecord]}
+                        checked={this.getEntities()[facilities].value[facilitiesRecord]}
                         onCheck={this.handleCheckedChangeWithName(facilities, facilitiesRecord)}
                     />
                     <Checkbox
                         className="checkbox"
                         label="행사안내 플랜카드"
-                        checked={this.state[facilities].value[facilitiesPlacard]}
+                        checked={this.getEntities()[facilities].value[facilitiesPlacard]}
                         onCheck={this.handleCheckedChangeWithName(facilities, facilitiesPlacard)}
                     />
                     <Checkbox
                         className="checkbox"
                         label="자체 홍보"
-                        checked={this.state[facilities].value[facilitiesSelfPromotion]}
+                        checked={this.getEntities()[facilities].value[facilitiesSelfPromotion]}
                         onCheck={this.handleCheckedChangeWithName(facilities, facilitiesSelfPromotion)}
                     />
                 </Entity>
@@ -252,7 +278,7 @@ class Form extends Component {
                     required={false}>
                     <TextField
                         hintText="내 답변"
-                        value={this.state[otherFacilities].value}
+                        value={this.getEntities()[otherFacilities].value}
                         onChange={this.handleChangeWithName(otherFacilities)}
                     />
                 </Entity>
@@ -262,14 +288,14 @@ class Form extends Component {
                     required={false}>
                     <TextField
                         hintText="내 답변"
-                        value={this.state[requirementsForSpeaker].value}
+                        value={this.getEntities()[requirementsForSpeaker].value}
                         onChange={this.handleChangeWithName(requirementsForSpeaker)}
                     />
                 </Entity>
 
                 <Entity
                     label={"위에 입력하신 담당자 개인 정보는 이 행사 기간동안 연락을 위해 사용되고 폐기될 예정입니다. 이 행사를 위해 위 개인 정보를 행사 주최측이 이용하는 것이 동의하십니까? (필수 동의)"}
-                    validated={isValid(this.state[personalInfoAgreement].value, this.state[personalInfoAgreement].validators)}
+                    validated={isValid(this.getEntities()[personalInfoAgreement].value, this.getEntities()[personalInfoAgreement].validators)}
                     required={true}>
                     <RadioButtonGroup
                         name="agreeGroup"
@@ -284,7 +310,7 @@ class Form extends Component {
 
                 <Entity
                     label={"도서관의 신청과 행사 주최측의 노력에도 불구하고, 해당 도서관에서 강연을 자원하는 강연자/진행자가 없을 경우에는 그 도서관에서의 행사가 진행되지 못할 수도 있다는 것에 동의하십니까? (필수 동의)"}
-                    validated={isValid(this.state[noVolunteerAgreement].value, this.state[noVolunteerAgreement].validators)}
+                    validated={isValid(this.getEntities()[noVolunteerAgreement].value, this.getEntities()[noVolunteerAgreement].validators)}
                     required={true}>
                     <RadioButtonGroup
                         name="agreeGroup"
@@ -316,6 +342,10 @@ class Form extends Component {
                     onClick={this.onSubmit}
                 />
                 <br/>
+                <br/>
+                <p className="required">
+                    {this.getValidationErrorMessage()}
+                </p>
                 <br/>
 
                 <p className="comment">
