@@ -10,45 +10,52 @@ import { isValid, notEmptyString } from "../utils/ValidationUtils";
 import {EntityForm, TYPE_BOOLEAN, TYPE_ONELINETEXT} from "../data/EntityForm";
 
 
-const libraryName = "libraryName";
-const libraryLocation = "libraryLocation";
+const name = "name";
+const roadAddress = "roadAddress";
+const numberAddress = "numberAddress";
+const additionalAddress = "additionalAddress";
+
 const managerName = "managerName";
 const managerEmail = "managerEmail";
-const managerPhonenumber = "managerPhonenumber";
-const capacityOfAudiences = "capacityOfAudiences";
+const managerPhone = "managerPhone";
+
+const capacity = "capacity";
+
 const facilities = "facilities";
 const facilitiesBeamOrScreen = "facilitiesBeamOrScreen";
 const facilitiesSound = "facilitiesSound";
 const facilitiesRecord = "facilitiesRecord";
 const facilitiesPlacard = "facilitiesPlacard";
-const facilitiesSelfPromotion = "facilitiesSelfPromotion";
+const facilitySelfPromo = "facilitySelfPromo";
+const facilityOther = "facilityOther";
 
-const requirementsForSpeaker = "requirementsForSpeaker";
-const personalInfoAgreement = "personalInfoAgreement";
-const noVolunteerAgreement = "noVolunteerAgreement";
-const otherFacilities = "otherFacilities";
+const requirements = "requirements";
+const infoHoldValid = "infoHoldValid";
+const insufficientValid = "insufficientValid";
 
 
 class Form extends Component {
     state = {
         entities: {
-            [libraryName]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
-            [libraryLocation]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
+            [name]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
+            [roadAddress]: new EntityForm("", TYPE_ONELINETEXT, false, [notEmptyString]),
+            [numberAddress]: new EntityForm("", TYPE_ONELINETEXT, false, [notEmptyString]),
+            [additionalAddress]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
             [managerName]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
             [managerEmail]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
-            [managerPhonenumber]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
-            [capacityOfAudiences]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
+            [managerPhone]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
+            [capacity]: new EntityForm("", TYPE_ONELINETEXT, true, [notEmptyString]),
             [facilities]: new EntityForm({
                 [facilitiesBeamOrScreen]: false,
                 [facilitiesSound]: false,
                 [facilitiesRecord]: false,
                 [facilitiesPlacard]: false,
-                [facilitiesSelfPromotion]: false,
+                [facilitySelfPromo]: false,
             }, TYPE_ONELINETEXT, true, []),
-            [requirementsForSpeaker]: new EntityForm("", TYPE_ONELINETEXT, false),
-            [otherFacilities]: new EntityForm("", TYPE_ONELINETEXT, false),
-            [personalInfoAgreement]: new EntityForm("", TYPE_BOOLEAN, true, [notEmptyString]),
-            [noVolunteerAgreement]: new EntityForm("", TYPE_BOOLEAN, true, [notEmptyString]),
+            [requirements]: new EntityForm("", TYPE_ONELINETEXT, false),
+            [facilityOther]: new EntityForm("", TYPE_ONELINETEXT, false),
+            [infoHoldValid]: new EntityForm("", TYPE_BOOLEAN, true, [notEmptyString]),
+            [insufficientValid]: new EntityForm("", TYPE_BOOLEAN, true, [notEmptyString]),
         },
         validationErrorMessageVisibility: false
     };
@@ -57,11 +64,25 @@ class Form extends Component {
         return this.state.entities;
     }
 
+    getForms() {
+        let forms = {};
+        for (let key in this.getEntities()) {
+            let eachForm = this.getEntities()[key];
+            forms[key] = eachForm.value
+        }
+
+        console.log("forms=", forms);
+        return forms;
+    }
+
     everyFormsAreValid() {
         for (let key in this.getEntities()) {
             let eachForm = this.getEntities()[key];
-            if (!isValid(eachForm.value, eachForm.validators)) {
-                return false;
+
+            if (eachForm.isRequired) {
+                if (!isValid(eachForm.value, eachForm.validators)) {
+                    return false;
+                }
             }
         }
 
@@ -74,7 +95,7 @@ class Form extends Component {
                 .post({
                     url: RESTAPI_HOST + 'api/v1/forms',
                     json: true,
-                    body: this.state,
+                    body: this.getForms(),
                 })
                 .on('error', (err) => {
                     console.log("err=", err);
@@ -173,23 +194,37 @@ class Form extends Component {
 
                 <Entity
                     label={"도서관 이름"}
-                    validated={isValid(this.getEntities()[libraryName].value, this.getEntities()[libraryName].validators)}
+                    validated={isValid(this.getEntities()[name].value, this.getEntities()[name].validators)}
                     required={true}>
                     <TextField
                         hintText="내 답변"
-                        value={this.getEntities()[libraryName].value}
-                        onChange={this.handleChangeWithName(libraryName)}
+                        value={this.getEntities()[name].value}
+                        onChange={this.handleChangeWithName(name)}
                     />
                 </Entity>
 
                 <Entity
                     label={"도서관 소재지 (지도 표시, 물품 배송을 위해 우편번호를 포함한 세부주소)"}
-                    validated={isValid(this.getEntities()[libraryLocation].value, this.getEntities()[libraryLocation].validators)}
+                    validated={isValid(this.getEntities()[additionalAddress].value, this.getEntities()[additionalAddress].validators)}
                     required={true}>
                     <TextField
-                        hintText="내 답변"
-                        value={this.getEntities()[libraryLocation].value}
-                        onChange={this.handleChangeWithName(libraryLocation)}
+                        disabled={true}
+                        hintText="도로명 주소"
+                        value={this.getEntities()[roadAddress].value}
+                        onChange={this.handleChangeWithName(roadAddress)}
+                    />
+                    <br />
+                    <TextField
+                        disabled={true}
+                        hintText="지번 주소"
+                        value={this.getEntities()[numberAddress].value}
+                        onChange={this.handleChangeWithName(numberAddress)}
+                    />
+                    <br />
+                    <TextField
+                        hintText="상세 주소를 입력해주세요."
+                        value={this.getEntities()[additionalAddress].value}
+                        onChange={this.handleChangeWithName(additionalAddress)}
                     />
                 </Entity>
 
@@ -217,23 +252,23 @@ class Form extends Component {
 
                 <Entity
                     label={"담당자 전화번호 (당일 연락을 위해 휴대폰 번호 권장)"}
-                    validated={isValid(this.getEntities()[managerPhonenumber].value, this.getEntities()[managerPhonenumber].validators)}
+                    validated={isValid(this.getEntities()[managerPhone].value, this.getEntities()[managerPhone].validators)}
                     required={true}>
                     <TextField
                         hintText="내 답변"
-                        value={this.getEntities()[managerPhonenumber].value}
-                        onChange={this.handleChangeWithName(managerPhonenumber)}
+                        value={this.getEntities()[managerPhone].value}
+                        onChange={this.handleChangeWithName(managerPhone)}
                     />
                 </Entity>
 
                 <Entity
                     label={"강의실 수용 인원 (예상 청중 규모)"}
-                    validated={isValid(this.getEntities()[capacityOfAudiences].value, this.getEntities()[capacityOfAudiences].validators)}
+                    validated={isValid(this.getEntities()[capacity].value, this.getEntities()[capacity].validators)}
                     required={true}>
                     <TextField
                         hintText="내 답변"
-                        value={this.getEntities()[capacityOfAudiences].value}
-                        onChange={this.handleChangeWithName(capacityOfAudiences)}
+                        value={this.getEntities()[capacity].value}
+                        onChange={this.handleChangeWithName(capacity)}
                     />
                 </Entity>
 
@@ -268,8 +303,8 @@ class Form extends Component {
                     <Checkbox
                         className="checkbox"
                         label="자체 홍보"
-                        checked={this.getEntities()[facilities].value[facilitiesSelfPromotion]}
-                        onCheck={this.handleCheckedChangeWithName(facilities, facilitiesSelfPromotion)}
+                        checked={this.getEntities()[facilities].value[facilitySelfPromo]}
+                        onCheck={this.handleCheckedChangeWithName(facilities, facilitySelfPromo)}
                     />
                 </Entity>
 
@@ -278,8 +313,8 @@ class Form extends Component {
                     required={false}>
                     <TextField
                         hintText="내 답변"
-                        value={this.getEntities()[otherFacilities].value}
-                        onChange={this.handleChangeWithName(otherFacilities)}
+                        value={this.getEntities()[facilityOther].value}
+                        onChange={this.handleChangeWithName(facilityOther)}
                     />
                 </Entity>
 
@@ -288,18 +323,18 @@ class Form extends Component {
                     required={false}>
                     <TextField
                         hintText="내 답변"
-                        value={this.getEntities()[requirementsForSpeaker].value}
-                        onChange={this.handleChangeWithName(requirementsForSpeaker)}
+                        value={this.getEntities()[requirements].value}
+                        onChange={this.handleChangeWithName(requirements)}
                     />
                 </Entity>
 
                 <Entity
                     label={"위에 입력하신 담당자 개인 정보는 이 행사 기간동안 연락을 위해 사용되고 폐기될 예정입니다. 이 행사를 위해 위 개인 정보를 행사 주최측이 이용하는 것이 동의하십니까? (필수 동의)"}
-                    validated={isValid(this.getEntities()[personalInfoAgreement].value, this.getEntities()[personalInfoAgreement].validators)}
+                    validated={isValid(this.getEntities()[infoHoldValid].value, this.getEntities()[infoHoldValid].validators)}
                     required={true}>
                     <RadioButtonGroup
                         name="agreeGroup"
-                        onChange={this.handleRadioChangeWithName(personalInfoAgreement)}
+                        onChange={this.handleRadioChangeWithName(infoHoldValid)}
                     >
                         <RadioButton
                             value="agree"
@@ -310,11 +345,11 @@ class Form extends Component {
 
                 <Entity
                     label={"도서관의 신청과 행사 주최측의 노력에도 불구하고, 해당 도서관에서 강연을 자원하는 강연자/진행자가 없을 경우에는 그 도서관에서의 행사가 진행되지 못할 수도 있다는 것에 동의하십니까? (필수 동의)"}
-                    validated={isValid(this.getEntities()[noVolunteerAgreement].value, this.getEntities()[noVolunteerAgreement].validators)}
+                    validated={isValid(this.getEntities()[insufficientValid].value, this.getEntities()[insufficientValid].validators)}
                     required={true}>
                     <RadioButtonGroup
                         name="agreeGroup"
-                        onChange={this.handleRadioChangeWithName(noVolunteerAgreement)}
+                        onChange={this.handleRadioChangeWithName(insufficientValid)}
                     >
                         <RadioButton
                             value="agree"
